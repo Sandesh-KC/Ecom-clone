@@ -41,7 +41,7 @@ products.forEach((product) => {
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-cart-add-${product.id}">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -57,12 +57,15 @@ products.forEach((product) => {
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
+//variable for timeout reset
+const addedMessageTimeouts = {};
+
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   button.addEventListener('click', () => {
     //data attribute saves data of any element from HTML
     //.dataset helps to get that element
     //product-name changes to productId while fetching in this case
-    const productId = button.dataset.productId;          //id to make objects having same name unique
+    const {productId} = button.dataset;          //id to make objects having same name unique
 
     //getting selected value for cart
     const quantitySelector = document.querySelector(`.js-quantity-selector-${productId}`);
@@ -80,11 +83,9 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
     if (matchingItem) {
       matchingItem.quantity +=selectedQuantity;
     } else {
-    cart.push({
-      productId: productId,
-      quantity: selectedQuantity
-    });
-  }
+      cart.push({productId, 
+      quantity: selectedQuantity});
+    }
 
   //to make cart button interactive
   let cartQuantity = 0;
@@ -93,5 +94,16 @@ document.querySelectorAll('.js-add-to-cart').forEach((button) => {
   });
 
   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+  
+  //to show the item added message
+  const addedMessage = document.querySelector(`.js-cart-add-${productId}`);
+  addedMessage.classList.add('added-to-cart-2');
+  if (addedMessageTimeouts[productId]) {
+    clearTimeout(addedMessageTimeouts[productId]);
+  }
+  addedMessageTimeouts[productId] = setTimeout(() => {
+    addedMessage.classList.remove('added-to-cart-2');
+    delete addedMessageTimeouts[productId];
+  }, 2000);
   });
 });

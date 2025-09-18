@@ -1,3 +1,6 @@
+import {cart} from '../data/cart.js';
+import {products} from '../data/products.js';
+
 let productsHTML = '';
 
 products.forEach((product) => {
@@ -57,7 +60,7 @@ products.forEach((product) => {
 
 document.querySelector('.js-products-grid').innerHTML = productsHTML;
 
-//variable for timeout reset
+//object for timeout reset
 const addedMessageTimeouts = {};
 
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
